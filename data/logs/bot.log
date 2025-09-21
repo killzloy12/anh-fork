@@ -1014,3 +1014,107 @@ NameError: name 'process_moderation_settings' is not defined
 2025-09-21 09:46:11,640 - aiogram.event - INFO - Update id=38355477 is not handled. Duration 0 ms by bot id=8456242343
 2025-09-21 09:46:21,340 - aiogram.event - INFO - Update id=38355478 is not handled. Duration 0 ms by bot id=8456242343
 2025-09-21 09:46:29,469 - aiogram.event - INFO - Update id=38355479 is not handled. Duration 0 ms by bot id=8456242343
+2025-09-21 13:29:17,505 - config_harsh - INFO - 🔒 РАЗРЕШЕННЫЕ ЧАТЫ: [-1001268110120, -1001564216954]
+2025-09-21 13:29:17,507 - config_harsh - INFO - 👑 АДМИНЫ: [1093943977]
+2025-09-21 13:29:17,509 - config_harsh - INFO - ⚙️ Конфигурация v3.0 загружена (ГРУБЫЙ РЕЖИМ)
+2025-09-21 13:29:18,965 - database - INFO - 🚀 Индексы созданы
+2025-09-21 13:29:18,972 - database - INFO - ⚙️ Расширенные настройки инициализированы
+2025-09-21 13:29:18,972 - database - INFO - 📋 Расширенные таблицы созданы
+2025-09-21 13:29:18,972 - database - INFO - 💾 Расширенная база данных инициализирована
+2025-09-21 13:29:28,689 - asyncio - ERROR - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x0000025248D7C050>
+2025-09-21 13:29:28,695 - asyncio - ERROR - Unclosed connector
+connections: ['[(<aiohttp.client_proto.ResponseHandler object at 0x0000025248D898B0>, 104088.687)]']
+connector: <aiohttp.connector.TCPConnector object at 0x0000025248D7D940>
+2025-09-21 13:31:49,835 - config_harsh - INFO - 🔒 РАЗРЕШЕННЫЕ ЧАТЫ: [-1001268110120, -1001564216954]
+2025-09-21 13:31:49,836 - config_harsh - INFO - 👑 АДМИНЫ: [1093943977]
+2025-09-21 13:31:49,839 - config_harsh - INFO - ⚙️ Конфигурация v3.0 загружена (ГРУБЫЙ РЕЖИМ)
+2025-09-21 13:33:49,787 - config_harsh - INFO - 🔒 РАЗРЕШЕННЫЕ ЧАТЫ: [-1001268110120, -1001564216954]
+2025-09-21 13:33:49,788 - config_harsh - INFO - 👑 АДМИНЫ: [1093943977]
+2025-09-21 13:33:49,790 - config_harsh - INFO - ⚙️ Конфигурация v3.0 загружена (ГРУБЫЙ РЕЖИМ)
+2025-09-21 13:33:51,018 - database - INFO - 🚀 Индексы созданы
+2025-09-21 13:33:51,028 - database - INFO - ⚙️ Расширенные настройки инициализированы
+2025-09-21 13:33:51,028 - database - INFO - 📋 Расширенные таблицы созданы
+2025-09-21 13:33:51,030 - database - INFO - 💾 Расширенная база данных инициализирована
+2025-09-21 13:34:07,686 - asyncio - ERROR - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x0000014FD27F06E0>
+2025-09-21 13:34:07,692 - asyncio - ERROR - Unclosed connector
+connections: ['[(<aiohttp.client_proto.ResponseHandler object at 0x0000014FD27C9970>, 104358.796)]']
+connector: <aiohttp.connector.TCPConnector object at 0x0000014FD27C7FE0>
+2025-09-21 13:42:36,037 - config_harsh - INFO - 🔒 РАЗРЕШЕННЫЕ ЧАТЫ: [-1001268110120, -1001564216954]
+2025-09-21 13:42:36,038 - config_harsh - INFO - 👑 АДМИНЫ: [1093943977]
+2025-09-21 13:42:36,059 - config_harsh - INFO - ⚙️ Конфигурация v3.0 загружена (ГРУБЫЙ РЕЖИМ)
+2025-09-21 13:42:37,386 - database - INFO - 🚀 Индексы созданы
+2025-09-21 13:42:37,393 - database - INFO - ⚙️ Расширенные настройки инициализированы
+2025-09-21 13:42:37,411 - database - INFO - 📋 Расширенные таблицы созданы
+2025-09-21 13:42:37,415 - database - INFO - 💾 Расширенная база данных инициализирована
+2025-09-21 13:55:16,070 - config_harsh - INFO - 🔒 РАЗРЕШЕННЫЕ ЧАТЫ: [-1001268110120, -1001564216954]
+2025-09-21 13:55:16,071 - config_harsh - INFO - 👑 АДМИНЫ: [1093943977]
+2025-09-21 13:55:16,074 - config_harsh - INFO - ⚙️ Конфигурация v3.0 загружена (ГРУБЫЙ РЕЖИМ)
+2025-09-21 13:55:17,522 - database - INFO - 🚀 Индексы созданы
+2025-09-21 13:55:17,538 - database - INFO - ⚙️ Расширенные настройки инициализированы
+2025-09-21 13:55:17,539 - database - INFO - 📋 Расширенные таблицы созданы
+2025-09-21 13:55:17,539 - database - INFO - 💾 Расширенная база данных инициализирована
+2025-09-21 13:55:20,870 - __main__ - INFO - ⚙️ Команды настроены
+2025-09-21 13:55:21,089 - aiogram.dispatcher - INFO - Start polling
+2025-09-21 13:55:21,159 - aiogram.dispatcher - INFO - Run polling for bot @ChaTs_big_bot id=8456242343 - 'ChaTs_big'
+2025-09-21 13:55:21,278 - aiogram.event - INFO - Update id=38355498 is not handled. Duration 0 ms by bot id=8456242343
+2025-09-21 13:55:21,280 - aiogram.event - INFO - Update id=38355499 is not handled. Duration 0 ms by bot id=8456242343
+2025-09-21 13:55:21,281 - aiogram.event - INFO - Update id=38355500 is not handled. Duration 0 ms by bot id=8456242343
+2025-09-21 13:55:21,282 - aiogram.event - INFO - Update id=38355501 is not handled. Duration 0 ms by bot id=8456242343
+2025-09-21 13:55:21,283 - aiogram.event - INFO - Update id=38355502 is not handled. Duration 0 ms by bot id=8456242343
+2025-09-21 13:55:21,284 - aiogram.event - INFO - Update id=38355503 is not handled. Duration 0 ms by bot id=8456242343
+2025-09-21 13:55:32,683 - aiogram.event - INFO - Update id=38355504 is not handled. Duration 0 ms by bot id=8456242343
+2025-09-21 13:57:43,662 - aiogram.event - INFO - Update id=38355505 is not handled. Duration 0 ms by bot id=8456242343
+2025-09-21 13:57:46,399 - aiogram.event - INFO - Update id=38355506 is not handled. Duration 0 ms by bot id=8456242343
+2025-09-21 13:57:55,921 - aiogram.event - INFO - Update id=38355507 is not handled. Duration 0 ms by bot id=8456242343
+2025-09-21 13:57:58,284 - aiogram.event - INFO - Update id=38355508 is not handled. Duration 0 ms by bot id=8456242343
+2025-09-21 13:58:33,602 - aiogram.event - INFO - Update id=38355509 is not handled. Duration 0 ms by bot id=8456242343
+2025-09-21 14:00:01,918 - aiogram.event - INFO - Update id=38355510 is not handled. Duration 0 ms by bot id=8456242343
+2025-09-21 14:05:16,976 - aiogram.event - INFO - Update id=38355511 is not handled. Duration 0 ms by bot id=8456242343
+2025-09-21 14:10:22,243 - config_harsh - INFO - 🔒 РАЗРЕШЕННЫЕ ЧАТЫ: [-1001268110120, -1001564216954]
+2025-09-21 14:10:22,245 - config_harsh - INFO - 👑 АДМИНЫ: [1093943977]
+2025-09-21 14:10:22,247 - config_harsh - INFO - ⚙️ Конфигурация v3.0 загружена (ГРУБЫЙ РЕЖИМ)
+2025-09-21 14:10:23,608 - database - INFO - 🚀 Индексы созданы
+2025-09-21 14:10:23,625 - database - INFO - ⚙️ Расширенные настройки инициализированы
+2025-09-21 14:10:23,626 - database - INFO - 📋 Расширенные таблицы созданы
+2025-09-21 14:10:23,627 - database - INFO - 💾 Расширенная база данных инициализирована
+2025-09-21 14:10:24,090 - __main__ - INFO - ⚙️ Команды настроены
+2025-09-21 14:10:24,293 - aiogram.dispatcher - INFO - Start polling
+2025-09-21 14:10:24,369 - aiogram.dispatcher - INFO - Run polling for bot @ChaTs_big_bot id=8456242343 - 'ChaTs_big'
+2025-09-21 14:10:54,392 - aiogram.event - INFO - Update id=38355512 is not handled. Duration 0 ms by bot id=8456242343
+2025-09-21 14:10:55,460 - aiogram.event - INFO - Update id=38355513 is not handled. Duration 0 ms by bot id=8456242343
+2025-09-21 14:10:58,750 - aiogram.event - INFO - Update id=38355514 is not handled. Duration 0 ms by bot id=8456242343
+2025-09-21 14:11:13,584 - aiogram.event - INFO - Update id=38355515 is not handled. Duration 0 ms by bot id=8456242343
+2025-09-21 14:11:55,525 - aiogram.event - INFO - Update id=38355516 is not handled. Duration 0 ms by bot id=8456242343
+2025-09-21 14:12:11,492 - aiogram.event - INFO - Update id=38355517 is not handled. Duration 0 ms by bot id=8456242343
+2025-09-21 14:21:27,157 - config_harsh - INFO - 🔒 РАЗРЕШЕННЫЕ ЧАТЫ: [-1001268110120, -1001564216954]
+2025-09-21 14:21:27,158 - config_harsh - INFO - 👑 АДМИНЫ: [1093943977]
+2025-09-21 14:21:27,176 - config_harsh - INFO - ⚙️ Конфигурация v3.0 загружена (ГРУБЫЙ РЕЖИМ)
+2025-09-21 14:21:28,578 - database - INFO - 🚀 Индексы созданы
+2025-09-21 14:21:28,585 - database - INFO - ⚙️ Расширенные настройки инициализированы
+2025-09-21 14:21:28,595 - database - INFO - 📋 Расширенные таблицы созданы
+2025-09-21 14:21:28,597 - database - INFO - 💾 Расширенная база данных инициализирована
+2025-09-21 14:21:29,118 - __main__ - INFO - ⚙️ Команды настроены
+2025-09-21 14:21:29,319 - aiogram.dispatcher - INFO - Start polling
+2025-09-21 14:21:29,394 - aiogram.dispatcher - INFO - Run polling for bot @ChaTs_big_bot id=8456242343 - 'ChaTs_big'
+2025-09-21 14:21:37,372 - aiogram.event - INFO - Update id=38355518 is not handled. Duration 0 ms by bot id=8456242343
+2025-09-21 14:21:38,996 - aiogram.event - INFO - Update id=38355519 is not handled. Duration 16 ms by bot id=8456242343
+2025-09-21 15:14:07,695 - config_harsh - INFO - 🔒 РАЗРЕШЕННЫЕ ЧАТЫ: [-1001268110120, -1001564216954]
+2025-09-21 15:14:07,699 - config_harsh - INFO - 👑 АДМИНЫ: [1093943977]
+2025-09-21 15:14:07,701 - config_harsh - INFO - ⚙️ Конфигурация v3.0 загружена (ГРУБЫЙ РЕЖИМ)
+2025-09-21 15:14:09,507 - database - INFO - 🚀 Индексы созданы
+2025-09-21 15:14:09,516 - database - INFO - ⚙️ Расширенные настройки инициализированы
+2025-09-21 15:14:09,527 - database - INFO - 📋 Расширенные таблицы созданы
+2025-09-21 15:14:09,528 - database - INFO - 💾 Расширенная база данных инициализирована
+2025-09-21 15:14:10,188 - __main__ - INFO - ⚙️ Команды настроены
+2025-09-21 15:14:10,447 - aiogram.dispatcher - INFO - Start polling
+2025-09-21 15:14:10,528 - aiogram.dispatcher - INFO - Run polling for bot @ChaTs_big_bot id=8456242343 - 'ChaTs_big'
+2025-09-21 15:15:03,776 - aiogram.event - INFO - Update id=38355520 is not handled. Duration 14 ms by bot id=8456242343
+2025-09-21 15:15:05,275 - aiogram.event - INFO - Update id=38355521 is not handled. Duration 0 ms by bot id=8456242343
+2025-09-21 15:32:12,074 - aiogram.event - INFO - Update id=38355522 is not handled. Duration 0 ms by bot id=8456242343
+2025-09-21 15:32:27,263 - aiogram.event - INFO - Update id=38355523 is not handled. Duration 0 ms by bot id=8456242343
+2025-09-21 15:32:42,485 - aiogram.event - INFO - Update id=38355524 is not handled. Duration 0 ms by bot id=8456242343
+2025-09-21 15:33:01,991 - aiogram.event - INFO - Update id=38355525 is not handled. Duration 0 ms by bot id=8456242343
+2025-09-21 15:33:25,530 - aiogram.event - INFO - Update id=38355526 is not handled. Duration 16 ms by bot id=8456242343
+2025-09-21 15:33:36,849 - aiogram.event - INFO - Update id=38355527 is not handled. Duration 0 ms by bot id=8456242343

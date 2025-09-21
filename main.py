@@ -3,12 +3,11 @@
 💀 ENHANCED TELEGRAM BOT v3.0 - ГРУБЫЙ РЕЖИМ
 🔥 Максимально жесткая версия бота
 
-НОВОЕ:
-• Работает только в разрешенных чатах
-• Все ответы реплаем
-• Максимально грубый стиль
-• Админка только в ЛС
-• Жесткие ограничения доступа
+ИСПРАВЛЕНО:
+• Правильная регистрация обработчиков
+• Работа только в разрешенных чатах
+• Логирование всех сообщений
+• Ответы только на обращения, команды и реплеи
 """
 
 import asyncio
@@ -50,7 +49,7 @@ modules_available = False
 
 try:
     from app.services.ai_service import AIService
-    from app.services.analytics_service import AnalyticsService  
+    from app.services.analytics_service import AnalyticsService 
     from app.services.crypto_service import CryptoService
     from app.modules.memory_module import MemoryModule
     from app.modules.moderation_module import ModerationModule
@@ -64,25 +63,32 @@ try:
     try:
         from app.modules.triggers_module_fixed import TriggersModule
     except ImportError:
-        from app.modules.triggers_module import TriggersModule
+        try:
+            from app.modules.triggers_module import TriggersModule
+        except ImportError:
+            TriggersModule = None
     
     try:
         from app.modules.permissions_module_fixed import PermissionsModule
     except ImportError:
-        from app.modules.permissions_module import PermissionsModule
+        try:
+            from app.modules.permissions_module import PermissionsModule
+        except ImportError:
+            PermissionsModule = None
     
-    # ИМПОРТ ГРУБЫХ ОБРАБОТЧИКОВ
-    try:
-        from handlers_ultimate_harsh import register_all_handlers
-    except ImportError:
-        from app.handlers import register_all_handlers
-        print("⚠️ Используются старые обработчики. Скопируйте handlers_ultimate_harsh.py в app/handlers/__init__.py")
+    # ИСПРАВЛЕННЫЙ ИМПОРТ ОБРАБОТЧИКОВ
+    from app.handlers.handlers_v3 import register_all_handlers
     
     modules_available = True
     
 except ImportError as e:
     print(f"ПРЕДУПРЕЖДЕНИЕ: Модуль {e.name} не найден")
     print("Бот будет работать в базовом режиме")
+    
+    # Используем базовые обработчики если модули недоступны
+    def register_all_handlers(dp, modules):
+        from app.handlers.handlers_v3 import register_basic_handlers
+        register_basic_handlers(dp, modules)
 
 logging.basicConfig(
     level=logging.INFO,
@@ -191,9 +197,9 @@ async def main():
             print("🧠 Инициализация AI...")
             if config.ai.openai_api_key or config.ai.anthropic_api_key:
                 modules['ai'] = AIService(config)
-                print("   ✅ AI активирован")
+                print("  ✅ AI активирован")
             else:
-                print("   ❌ AI отключен (нет ключей)")
+                print("  ❌ AI отключен (нет ключей)")
             
             print("📊 Инициализация аналитики...")
             modules['analytics_service'] = AnalyticsService(db_service)
@@ -201,9 +207,9 @@ async def main():
             print("₿ Инициализация крипто...")
             if config.crypto.enabled:
                 modules['crypto_service'] = CryptoService(config)
-                print("   ✅ Крипто активировано")
+                print("  ✅ Крипто активировано")
             else:
-                print("   ❌ Крипто отключено")
+                print("  ❌ Крипто отключено")
             
             print("🧩 Инициализация модулей...")
             modules['memory'] = MemoryModule(db_service)
@@ -215,10 +221,12 @@ async def main():
             modules['charts'] = ChartsModule(db_service)
             
             print("⚡ Инициализация триггеров...")
-            modules['triggers'] = TriggersModule(db_service, config)
+            if TriggersModule:
+                modules['triggers'] = TriggersModule(db_service, config)
             
             print("🔒 Инициализация разрешений...")
-            modules['permissions'] = PermissionsModule(config)
+            if PermissionsModule:
+                modules['permissions'] = PermissionsModule(config)
             
             # Отложенная загрузка
             print("📥 Загрузка триггеров и разрешений...")
@@ -227,24 +235,26 @@ async def main():
             if modules['permissions']:
                 await modules['permissions'].initialize()
             
-            print("🎛️ Регистрация ГРУБЫХ обработчиков...")
-            register_all_handlers(dp, modules)
-            
             active_modules = sum(1 for m in modules.values() if m is not None and m != config and m != bot and m != db_service)
-            print(f"   💀 Активных модулей: {active_modules}")
-            
+            print(f"  💀 Активных модулей: {active_modules}")
+        
         else:
             print("⚠️ Базовый режим - модули недоступны")
+        
+        # ИСПРАВЛЕННАЯ РЕГИСТРАЦИЯ ОБРАБОТЧИКОВ
+        print("🎛️ Регистрация ГРУБЫХ обработчиков...")
+        register_all_handlers(dp, modules)
+        print("  ✅ Обработчики зарегистрированы")
         
         # Проверяем подключение
         print("📡 Проверка подключения...")
         try:
             bot_info = await bot.get_me()
-            print(f"   💀 Подключен: @{bot_info.username}")
-            print(f"   📝 Имя: {bot_info.first_name}")
-            print(f"   🆔 ID: {bot_info.id}")
+            print(f"  💀 Подключен: @{bot_info.username}")
+            print(f"  📝 Имя: {bot_info.first_name}")
+            print(f"  🆔 ID: {bot_info.id}")
         except Exception as e:
-            print(f"   ❌ ОШИБКА: {e}")
+            print(f"  ❌ ОШИБКА: {e}")
             print("Проверь BOT_TOKEN")
             input("Нажми Enter для выхода...")
             return
@@ -255,37 +265,37 @@ async def main():
         # Уведомления админов
         if config.bot.admin_ids:
             startup_message = (
-                "💀 <b>ГРУБЫЙ БОТ v3.0 ЗАПУЩЕН!</b>\n\n"
-                f"<b>Бот:</b> @{bot_info.username}\n"
-                f"<b>Режим:</b> МАКСИМАЛЬНО ГРУБЫЙ\n"
-                f"<b>Разрешенных чатов:</b> {len(config.bot.allowed_chat_ids) if config.bot.allowed_chat_ids else 'Все'}\n\n"
-                "<b>🔥 ОСОБЕННОСТИ:</b>\n"
-                "• Все ответы только реплаем\n"
-                "• Максимально грубый стиль\n"
-                "• Админка только в ЛС\n"
-                "• Жесткие ограничения\n"
+                "💀 **ГРУБЫЙ БОТ v3.0 ЗАПУЩЕН!**\n\n"
+                f"**Бот:** @{bot_info.username}\n"
+                f"**Режим:** МАКСИМАЛЬНО ГРУБЫЙ\n"
+                f"**Разрешенных чатов:** {len(config.bot.allowed_chat_ids) if config.bot.allowed_chat_ids else 'Все'}\n\n"
+                "**🔥 ОСОБЕННОСТИ:**\n"
+                "• Логирование всех сообщений\n"
+                "• Ответ только на обращения\n"
+                "• Ответ только на команды\n"
+                "• Ответ только на реплеи к боту\n"
+                "• Редкая самостоятельная активность\n"
                 "• Работа только в разрешенных чатах\n\n"
-                "<b>ГОТОВ К РАБОТЕ!</b>"
+                "**ГОТОВ К РАБОТЕ!**"
             )
             
             for admin_id in config.bot.admin_ids:
                 try:
                     await bot.send_message(admin_id, startup_message)
-                    print(f"   📤 Админ уведомлен: {admin_id}")
+                    print(f"  📤 Админ уведомлен: {admin_id}")
                 except Exception as e:
-                    print(f"   ⚠️ Не удалось уведомить {admin_id}: {e}")
+                    print(f"  ⚠️ Не удалось уведомить {admin_id}: {e}")
         
         print("\n" + "=" * 50)
         print("💀 ГРУБЫЙ БОТ v3.0 УСПЕШНО ЗАПУЩЕН!")
         print("=" * 50)
         print("\n🔥 ОСОБЕННОСТИ ГРУБОГО РЕЖИМА:")
-        print("   • Убрано 'Бот:' в начале ответов")
-        print("   • Убрано 'Думаю...' перед ответами") 
-        print("   • Максимально грубый стиль общения")
-        print("   • Все ответы только реплаем") 
-        print("   • Админка работает только в ЛС")
-        print("   • Жесткие ограничения по чатам")
-        print("   • Короткие грубые ответы без смайлов")
+        print("  • Логирование ВСЕХ сообщений чата")
+        print("  • Ответ ТОЛЬКО при обращении к боту") 
+        print("  • Ответ ТОЛЬКО на команды")
+        print("  • Ответ ТОЛЬКО на реплеи к боту")
+        print("  • Очень редкая самостоятельная активность")
+        print("  • Жесткие ограничения по чатам")
         
         if config.bot.allowed_chat_ids:
             print(f"\n🔒 РАЗРЕШЕННЫЕ ЧАТЫ: {config.bot.allowed_chat_ids}")
@@ -314,10 +324,11 @@ async def main():
         logger.error(f"💥 Критическая ошибка: {e}")
         print(f"💥 ОШИБКА: {e}")
         print("\n🔍 Проверь:")
-        print("   1. BOT_TOKEN в .env")
-        print("   2. ADMIN_IDS в .env")
-        print("   3. Правильность файлов конфигурации")
-        print("   4. Наличие всех модулей")
+        print("  1. BOT_TOKEN в .env")
+        print("  2. ADMIN_IDS в .env") 
+        print("  3. ALLOWED_CHAT_IDS в .env")
+        print("  4. Правильность файлов конфигурации")
+        print("  5. Наличие всех модулей")
         input("\nНажми Enter для выхода...")
 
 if __name__ == "__main__":

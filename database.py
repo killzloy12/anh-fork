@@ -59,8 +59,66 @@ class DatabaseService:
             logger.error(f"❌ Ошибка инициализации БД: {e}")
             raise
     
+    async def log_message(self, chat_id: int, user_id: int, username: str, full_name: str, 
+                      text: str, message_type: str = 'text', timestamp=None):
+            """📝 Логирование сообщения пользователя"""
+            if timestamp is None:
+        timestamp = datetime.now()
+    
+        try:
+            await self.execute("""
+            INSERT INTO chat_logs (chat_id, user_id, username, full_name, text, message_type, timestamp)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+                """, (chat_id, user_id, username, full_name, text, message_type, timestamp))
+        
+        except Exception as e:
+            logger.error(f"❌ Ошибка логирования сообщения: {e}")
+
+    async def get_user_stats(self, user_id: int) -> dict:
+            """📊 Получение статистики пользователя"""
+        try:
+            result = await self.fetch_one("""
+            SELECT 
+                COUNT(*) as total_messages,
+                MIN(timestamp) as first_seen,
+                MAX(timestamp) as last_seen
+            FROM chat_logs 
+            WHERE user_id = ?
+            """, (user_id,))
+        
+            if result:
+                return {
+                'total_messages': result['total_messages'],
+                'first_seen': result['first_seen'],
+                'last_seen': result['last_seen']
+            }
+        else:
+            return {'total_messages': 0, 'first_seen': 'неизвестно', 'last_seen': 'никогда'}
+            
+        except Exception as e:
+            logger.error(f"❌ Ошибка получения статистики: {e}")
+            return {'total_messages': 0, 'first_seen': 'ошибка', 'last_seen': 'ошибка'}
+
+    async def export_recent_logs(self, limit: int = 1000) -> list:
+            """📤 Экспорт последних логов"""
+        try:
+            results = await self.fetch_all("""
+            SELECT chat_id, user_id, username, full_name, text, message_type, timestamp
+            FROM chat_logs 
+            ORDER BY timestamp DESC 
+            LIMIT ?
+        """, (limit,))
+        
+            return [dict(row) for row in results] if results else []
+        
+        except Exception as e:
+            logger.error(f"❌ Ошибка экспорта логов: {e}")
+            return []
+        
+    
+    
     async def _create_extended_tables(self):
-        """📋 Создание всех расширенных таблиц"""
+            """📋 Создание всех расширенных таблиц"""
         
         tables = [
             # =================== ОСНОВНЫЕ ТАБЛИЦЫ ===================
@@ -527,6 +585,29 @@ class DatabaseService:
                 logger.error(f"❌ Ошибка создания таблицы: {e}")
         
         await self.connection.commit()
+        
+        await self.execute("""
+            CREATE TABLE IF NOT EXISTS chat_logs (
+                d INTEGER PRIMARY KEY AUTOINCREMENT,
+                chat_id INTEGER NOT NULL,
+                user_id INTEGER NOT NULL,
+                username TEXT,
+                full_name TEXT,
+                text TEXT,
+                message_type TEXT DEFAULT 'text',
+                timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+                    )
+                """)
+
+        await self.execute("""
+            CREATE INDEX IF NOT EXISTS idx_chat_logs_user 
+            ON chat_logs(user_id, timestamp)
+            """)
+
+        await self.execute("""
+            CREATE INDEX IF NOT EXISTS idx_chat_logs_chat 
+            ON chat_logs(chat_id, timestamp)
+            """)
         
         # Создаем индексы для производительности
         await self._create_indexes()
