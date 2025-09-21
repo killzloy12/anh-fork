@@ -1,0 +1,55 @@
+# 💀 ENHANCED TELEGRAM BOT v3.0 - ГРУБЫЙ РЕЖИМ
+# ================================================
+
+# ОБЯЗАТЕЛЬНО ЗАПОЛНИ!
+BOT_TOKEN=ваш_токен_от_BotFather
+ADMIN_IDS=ваш_telegram_id,админ_id_2
+
+# 🔒 РАЗРЕШЕННЫЕ ЧАТЫ (ЖЕСТКО!)
+# Укажи ID чатов где бот может работать
+# Для получения ID чата: добавь бота в группу и напиши /start
+ALLOWED_CHAT_IDS=-1001234567890,-1001987654321,1093943977
+
+# 🧠 AI НАСТРОЙКИ
+OPENAI_API_KEY=ваш_openai_ключ
+ANTHROPIC_API_KEY=ваш_anthropic_ключ
+AI_DEFAULT_MODEL=gpt-4o-mini
+AI_TEMPERATURE=0.3
+AI_MAX_TOKENS=1024
+
+# 💀 ГРУБЫЕ НАСТРОЙКИ
+RANDOM_REPLY_CHANCE=0.005
+STRICT_MODE=true
+USE_WHITELIST=true
+
+# 🛡️ ЖЕСТКАЯ МОДЕРАЦИЯ
+AUTO_MODERATION=true
+TOXICITY_THRESHOLD=0.7
+FLOOD_THRESHOLD=3
+MAX_WARNINGS=2
+MUTE_DURATION_MINUTES=60
+BAN_DURATION_HOURS=24
+
+# ⚡ ОГРАНИЧЕННЫЕ ТРИГГЕРЫ
+TRIGGERS_ENABLED=true
+MAX_TRIGGERS_PER_USER=5
+MAX_TRIGGERS_PER_ADMIN=100
+
+# 🔒 ЖЕСТКИЕ РАЗРЕШЕНИЯ
+PERMISSIONS_ENABLED=true
+LOG_CHAT_ACCESS=true
+
+# 📝 ЛОГИРОВАНИЕ
+LOG_LEVEL=INFO
+LOG_USER_MESSAGES=false
+LOG_AI_REQUESTS=true
+LOG_MODERATION_ACTIONS=true
+
+# ₿ КРИПТОВАЛЮТЫ
+CRYPTO_ENABLED=true
+COINGECKO_API_KEY=опционально
+
+# 📊 АНАЛИТИКА
+ANALYTICS_ENABLED=true
+TRACK_MESSAGES=true
+BEHAVIOR_ANALYSIS=true

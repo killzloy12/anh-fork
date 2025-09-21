@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  telegram-bot:
+    build: .
+    container_name: enhanced_telegram_bot_v2
+    restart: unless-stopped
+    
+    environment:
+      # Основные настройки
+      - BOT_TOKEN=${BOT_TOKEN}
+      - ADMIN_IDS=${ADMIN_IDS}
+      
+      # AI настройки
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - AI_DEFAULT_MODEL=${AI_DEFAULT_MODEL:-gpt-4o-mini}
+      - AI_DAILY_LIMIT=${AI_DAILY_LIMIT:-1000}
+      - AI_USER_LIMIT=${AI_USER_LIMIT:-50}
+      
+      # Криптовалюты
+      - CRYPTO_ENABLED=${CRYPTO_ENABLED:-true}
+      - COINGECKO_API_KEY=${COINGECKO_API_KEY:-}
+      
+      # Модерация
+      - MODERATION_ENABLED=${MODERATION_ENABLED:-true}
+      - AUTO_MODERATION=${AUTO_MODERATION:-true}
+      - TOXICITY_THRESHOLD=${TOXICITY_THRESHOLD:-0.8}
+      
+      # Аналитика
+      - ANALYTICS_ENABLED=${ANALYTICS_ENABLED:-true}
+      - TRACK_MESSAGES=${TRACK_MESSAGES:-true}
+      - TRACK_ACTIVITY=${TRACK_ACTIVITY:-true}
+      
+      # Поведение
+      - BEHAVIOR_ENABLED=${BEHAVIOR_ENABLED:-true}
+      - LEARNING_ENABLED=${LEARNING_ENABLED:-true}
+      
+      # Дополнительно
+      - RANDOM_REPLY_CHANCE=${RANDOM_REPLY_CHANCE:-0.05}
+      - CHARTS_ENABLED=${CHARTS_ENABLED:-true}
+      - DEBUG=${DEBUG:-false}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    
+    volumes:
+      # Персистентное хранение данных
+      - ./data:/app/data
+      - ./logs:/app/data/logs
+    
+    networks:
+      - bot-network
+    
+    # Политика перезапуска
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+    
+    # Проверка здоровья
+    healthcheck:
+      test: ["CMD", "python", "-c", "import sys; sys.exit(0)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  bot-network:
+    driver: bridge
+
+volumes:
+  bot-data:
+    driver: local
