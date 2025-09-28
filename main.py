@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 """
-💀 ENHANCED TELEGRAM BOT v3.0 - ГРУБЫЙ РЕЖИМ С AI (ИСПРАВЛЕННЫЙ)
-🔥 Максимально жесткая версия бота с человекоподобным AI
+💀 ENHANCED TELEGRAM BOT v3.0 - С ПРОИЗВОЛЬНЫМИ ПЕРСОНАЖАМИ И КАРМОЙ
+🚀 Максимально крутая версия бота с AI персонажами
 
-ИСПРАВЛЕНО:
-• Правильные импорты модулей
-• Обработка отсутствующих модулей
-• Работа в базовом режиме без AI
-• Постепенное подключение модулей
+НОВОЕ В v3.0:
+• Произвольные персонажи (/be описание)
+• Система кармы с уровнями
+• Улучшенный AI с персонажами
+• Автоматическое начисление кармы
+• Умная модерация
 """
 
 import asyncio
@@ -39,88 +40,56 @@ try:
     from config_harsh import load_config
     from database import DatabaseService
 except ImportError as e:
-    print(f"ОШИБКА: Не найден модуль {e.name}")
+    print(f"❌ ОШИБКА: Не найден модуль {e.name}")
     print("Используй config_harsh.py как config.py")
     input("Нажмите Enter для выхода...")
     sys.exit(1)
 
-# Опциональные импорты модулей
-modules_available = False
-ai_modules_available = False
-
+# ИМПОРТ AI МОДУЛЕЙ (НОВОЕ!)
 try:
-    from app.services.ai_service import AIService
-    from app.services.analytics_service import AnalyticsService 
-    from app.services.crypto_service import CryptoService
-    from app.modules.memory_module import MemoryModule
-    from app.modules.moderation_module import ModerationModule
-    from app.modules.analytics_module import AnalyticsModule
-    from app.modules.behavior_module import BehaviorModule
-    from app.modules.stickers_module import StickersModule
-    from app.modules.crypto_module import CryptoModule
-    from app.modules.charts_module import ChartsModule
-    
-    # Исправленные модули v3.0
-    try:
-        from app.modules.triggers_module_fixed import TriggersModule
-    except ImportError:
-        try:
-            from app.modules.triggers_module import TriggersModule
-        except ImportError:
-            TriggersModule = None
-    
-    try:
-        from app.modules.permissions_module_fixed import PermissionsModule
-    except ImportError:
-        try:
-            from app.modules.permissions_module import PermissionsModule
-        except ImportError:
-            PermissionsModule = None
-    
-    modules_available = True
-    
-except ImportError as e:
-    print(f"ПРЕДУПРЕЖДЕНИЕ: Базовый модуль {e.name} не найден")
-
-# Попытка импорта AI модулей
-try:
-    # ИСПРАВЛЕННЫЕ ИМПОРТЫ - правильные пути к файлам
     from app.services.human_ai_service import HumanLikeAI, create_conversation_context
     from app.modules.conversation_memory import ConversationMemoryModule
     from app.modules.advanced_triggers import AdvancedTriggersModule
     from app.modules.media_triggers import MediaTriggersModule
-    
-    ai_modules_available = True
+    AI_MODULES_AVAILABLE = True
     print("✅ AI модули найдены!")
-    
 except ImportError as e:
-    print(f"⚠️ AI модуль {e.name} не найден - работаем в базовом режиме")
-    ai_modules_available = False
+    print(f"⚠️ AI модуль {e.name} не найден")
+    AI_MODULES_AVAILABLE = False
 
-# ИСПРАВЛЕННЫЙ ИМПОРТ ОБРАБОТЧИКОВ
+# ИМПОРТ НОВЫХ СИСТЕМ (ПЕРСОНАЖИ И КАРМА)
 try:
-    if ai_modules_available:
-        from app.handlers.handlers_v3_fixed import register_all_handlers
-        print("✅ Используем AI обработчики")
-    else:
-        from app.handlers.handlers_v3 import register_all_handlers
-        print("⚠️ Используем базовые обработчики")
-        
+    from app.modules.custom_personality_system import CustomPersonalityManager
+    from app.modules.karma_system import KarmaManager
+    PERSONA_KARMA_AVAILABLE = True
+    print("✅ Системы персонажей и кармы найдены!")
+except ImportError as e:
+    print(f"⚠️ Модуль {e.name} не найден")
+    PERSONA_KARMA_AVAILABLE = False
+
+# ИМПОРТ ОБРАБОТЧИКОВ
+try:
+    from app.handlers.handlers_v3_fixed import register_all_handlers
+    print("✅ Обработчики найдены")
 except ImportError as e:
     print(f"❌ Ошибка импорта обработчиков: {e}")
-    print("Используем fallback обработчики")
-    
-    # Fallback - создаем простые обработчики
-    def register_all_handlers(dp, modules):
-        from app.handlers.handlers_v3_fixed import register_all_handlers as fallback_handlers
-        return fallback_handlers(dp, modules)
+    print("Проверьте наличие файла handlers_v3_fixed.py")
+    sys.exit(1)
+
+# ОПЦИОНАЛЬНЫЕ СЕРВИСЫ
+try:
+    from app.services.ai_service import AIService
+    from app.services.analytics_service import AnalyticsService 
+    from app.services.crypto_service import CryptoService
+    SERVICES_AVAILABLE = True
+except ImportError as e:
+    print(f"⚠️ Сервис {e.name} не найден")
+    SERVICES_AVAILABLE = False
 
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.StreamHandler()
-    ]
+    handlers=[logging.StreamHandler()]
 )
 
 logger = logging.getLogger(__name__)
@@ -129,23 +98,25 @@ async def setup_bot_commands(bot: Bot):
     """⚙️ Настройка команд бота"""
     
     commands = [
-        BotCommand(command="start", description="Запуск"),
-        BotCommand(command="help", description="Команды"),
-        BotCommand(command="ai", description="AI помощник"),
-        BotCommand(command="crypto", description="Криптовалюты"),
-        BotCommand(command="stats", description="Статистика"),
-        BotCommand(command="about", description="О боте"),
+        BotCommand(command="start", description="🚀 Запуск бота"),
+        BotCommand(command="help", description="📖 Все команды"),
+        BotCommand(command="be", description="🎭 Стать персонажем"),
+        BotCommand(command="karma", description="⚖️ Моя карма"),
+        BotCommand(command="ai", description="🧠 AI помощник"),
+        BotCommand(command="my_personas", description="👤 Мои персонажи"),
+        BotCommand(command="karma_top", description="🏆 Топ кармы"),
+        BotCommand(command="reset_persona", description="🔄 Сбросить персонажа"),
     ]
     
     await bot.set_my_commands(commands)
     logger.info("⚙️ Команды настроены")
 
 async def main():
-    """💀 Основная функция ГРУБОГО запуска с AI"""
+    """🚀 Основная функция запуска бота"""
     
-    print("💀 ENHANCED TELEGRAM BOT v3.0 - ЗАПУСК...")
-    print("🧠 С поддержкой человекоподобного AI" if ai_modules_available else "⚠️ Базовый режим без AI")
-    print("=" * 50)
+    print("🎭 ENHANCED TELEGRAM BOT v3.0 - ПЕРСОНАЖИ И КАРМА")
+    print("🧠 С поддержкой произвольных персонажей и системой кармы")
+    print("=" * 60)
     
     try:
         # Создаем директории
@@ -169,28 +140,18 @@ async def main():
         if not config.bot.token:
             print("❌ ОШИБКА: BOT_TOKEN не найден!")
             print("1. Создай файл .env")
-            print("2. Скопируй содержимое из env_harsh.txt в .env")
-            print("3. Заполни BOT_TOKEN и ADMIN_IDS")
-            print("4. Обязательно укажи ALLOWED_CHAT_IDS!")
+            print("2. Заполни BOT_TOKEN и ADMIN_IDS")
             input("Нажми Enter для выхода...")
             return
         
         if not config.bot.admin_ids:
             print("❌ ОШИБКА: ADMIN_IDS не указаны!")
-            print("Укажи свой Telegram ID в .env файле")
             input("Нажми Enter для выхода...")
             return
         
-        if not config.bot.allowed_chat_ids:
-            print("⚠️ ВНИМАНИЕ: ALLOWED_CHAT_IDS не указаны!")
-            print("Бот будет работать везде (небезопасно)")
-            print("Рекомендуется указать разрешенные чаты")
-        
         bot = Bot(
             token=config.bot.token,
-            default=DefaultBotProperties(
-                parse_mode=ParseMode.HTML
-            )
+            default=DefaultBotProperties(parse_mode=ParseMode.MARKDOWN)
         )
         
         dp = Dispatcher()
@@ -199,37 +160,21 @@ async def main():
         db_service = DatabaseService(config.database)
         await db_service.initialize()
         
-        # Инициализация модулей
+        # МОДУЛИ
         modules = {
             'config': config,
             'db': db_service,
-            'bot': bot,
-            'ai': None,
-            'analytics_service': None,
-            'crypto_service': None,
-            'memory': None,
-            'moderation': None,
-            'analytics': None,
-            'behavior': None,
-            'stickers': None,
-            'crypto': None,
-            'charts': None,
-            'triggers': None,
-            'permissions': None,
-            # Новые AI модули
-            'human_ai': None,
-            'conversation_memory': None,
-            'advanced_triggers': None,
-            'media_triggers': None
+            'bot': bot
         }
         
-        if modules_available:
-            print("🧠 Инициализация базовых модулей...")
+        # БАЗОВЫЕ СЕРВИСЫ
+        if SERVICES_AVAILABLE:
+            print("🧠 Инициализация AI сервиса...")
             if config.ai.openai_api_key or config.ai.anthropic_api_key:
                 modules['ai'] = AIService(config)
-                print("  ✅ AI активирован")
+                print("  ✅ AI сервис активирован")
             else:
-                print("  ❌ AI отключен (нет ключей)")
+                print("  ⚠️ AI сервис отключен (нет ключей)")
             
             print("📊 Инициализация аналитики...")
             modules['analytics_service'] = AnalyticsService(db_service)
@@ -238,27 +183,10 @@ async def main():
             if config.crypto.enabled:
                 modules['crypto_service'] = CryptoService(config)
                 print("  ✅ Крипто активировано")
-            else:
-                print("  ❌ Крипто отключено")
-            
-            print("🧩 Инициализация стандартных модулей...")
-            modules['memory'] = MemoryModule(db_service)
-            modules['moderation'] = ModerationModule(db_service, config) if config.moderation.enabled else None
-            modules['analytics'] = AnalyticsModule(modules['analytics_service'])
-            modules['behavior'] = BehaviorModule(db_service, modules['ai']) if modules['ai'] else None
-            modules['stickers'] = StickersModule(db_service)
-            modules['crypto'] = CryptoModule(modules['crypto_service']) if modules['crypto_service'] else None
-            modules['charts'] = ChartsModule(db_service)
-            
-            if TriggersModule:
-                modules['triggers'] = TriggersModule(db_service, config)
-            
-            if PermissionsModule:
-                modules['permissions'] = PermissionsModule(config)
         
-        # Инициализация AI модулей (если доступны)
-        if ai_modules_available:
-            print("🚀 Инициализация AI модулей...")
+        # AI МОДУЛИ (ЧЕЛОВЕКОПОДОБНЫЙ AI)
+        if AI_MODULES_AVAILABLE:
+            print("🚀 Инициализация человекоподобного AI...")
             
             try:
                 # Human-like AI
@@ -285,73 +213,84 @@ async def main():
                 print("  ✅ Медиа триггеры активированы")
                 
             except Exception as e:
-                logger.error(f"❌ Ошибка инициализации AI модулей: {e}")
+                logger.error(f"❌ Ошибка AI модулей: {e}")
                 print(f"⚠️ AI модули частично недоступны: {e}")
         
-        # Human-like AI
-        if config.ai.openai_api_key or config.ai.anthropic_api_key:
-                modules['ai'] = AIService(config)  # ← ДОБАВЬТЕ ЭТУ СТРОКУ!
-                modules['human_ai'] = HumanLikeAI(config)
-                print("  ✅ Human-like AI активирован")
-        else:
-             print("  ❌ OPENAI_API_KEY не найден в .env!")
-
+        # НОВЫЕ СИСТЕМЫ (ПЕРСОНАЖИ И КАРМА)
+        if PERSONA_KARMA_AVAILABLE:
+            print("🎭 Инициализация системы персонажей...")
+            try:
+                modules['custom_personality_manager'] = CustomPersonalityManager(
+                    db_service, config, modules.get('ai')
+                )
+                await modules['custom_personality_manager'].initialize()
+                print("  ✅ Система персонажей активирована")
+            except Exception as e:
+                logger.error(f"❌ Ошибка персонажей: {e}")
+            
+            print("⚖️ Инициализация системы кармы...")
+            try:
+                modules['karma_manager'] = KarmaManager(db_service, config)
+                await modules['karma_manager'].initialize()
+                print("  ✅ Система кармы активирована")
+            except Exception as e:
+                logger.error(f"❌ Ошибка кармы: {e}")
         
-        # ИСПРАВЛЕННАЯ РЕГИСТРАЦИЯ ОБРАБОТЧИКОВ
+        # РЕГИСТРАЦИЯ ОБРАБОТЧИКОВ
         print("🎛️ Регистрация обработчиков...")
         try:
             register_all_handlers(dp, modules)
             print("  ✅ Обработчики зарегистрированы")
         except Exception as e:
-            logger.error(f"❌ Ошибка регистрации обработчиков: {e}")
+            logger.error(f"❌ Ошибка регистрации: {e}")
             print(f"❌ Ошибка регистрации: {e}")
             return
         
-        # Проверяем подключение
+        # ПРОВЕРКА ПОДКЛЮЧЕНИЯ
         print("📡 Проверка подключения...")
         try:
             bot_info = await bot.get_me()
-            print(f"  💀 Подключен: @{bot_info.username}")
+            print(f"  🤖 Подключен: @{bot_info.username}")
             print(f"  📝 Имя: {bot_info.first_name}")
             print(f"  🆔 ID: {bot_info.id}")
         except Exception as e:
             print(f"  ❌ ОШИБКА: {e}")
             print("Проверь BOT_TOKEN")
-            input("Нажми Enter для выхода...")
             return
         
         # Настройка команд
         await setup_bot_commands(bot)
         
-        # Уведомления админов
+        # УВЕДОМЛЕНИЯ АДМИНОВ
         if config.bot.admin_ids:
-            mode_text = "🧠 ULTIMATE AI РЕЖИМ" if ai_modules_available else "⚠️ БАЗОВЫЙ РЕЖИМ"
+            features = []
+            
+            if AI_MODULES_AVAILABLE:
+                features.append("🧠 Человекоподобный AI")
+            if PERSONA_KARMA_AVAILABLE:
+                features.append("🎭 Произвольные персонажи")
+                features.append("⚖️ Система кармы")
+            if SERVICES_AVAILABLE:
+                features.append("📊 Аналитика")
+                features.append("₿ Криптовалюты")
+            
             startup_message = (
-                f"💀 **ENHANCED BOT v3.0 ЗАПУЩЕН!**\n\n"
-                f"**Режим:** {mode_text}\n"
+                f"🎭 **BOT v3.0 ЗАПУЩЕН!**\n\n"
                 f"**Бот:** @{bot_info.username}\n"
-                f"**Разрешенных чатов:** {len(config.bot.allowed_chat_ids) if config.bot.allowed_chat_ids else 'Все'}\n\n"
+                f"**Возможности:**\n"
             )
             
-            if ai_modules_available:
-                startup_message += (
-                    "**🧠 AI ВОЗМОЖНОСТИ:**\n"
-                    "• Человекоподобное общение\n"
-                    "• Долгосрочная память диалогов\n"
-                    "• Умные триггеры и реакции\n"
-                    "• Анализ эмоций и контекста\n"
-                    "• Мультимедийные ответы\n\n"
-                )
-            else:
-                startup_message += (
-                    "**⚠️ БАЗОВЫЙ РЕЖИМ:**\n"
-                    "• Стандартное общение\n"
-                    "• Базовые команды\n"
-                    "• Простые триггеры\n\n"
-                    "Для AI режима добавьте модули!\n\n"
-                )
+            for feature in features:
+                startup_message += f"• {feature}\n"
             
-            startup_message += "**ГОТОВ К РАБОТЕ!**"
+            startup_message += (
+                f"\n**🎯 Новые команды:**\n"
+                f"• `/be описание` - стать персонажем\n"
+                f"• `/karma` - моя карма\n"
+                f"• `/karma_top` - топ по карме\n"
+                f"• `/my_personas` - мои персонажи\n\n"
+                f"**ГОТОВ К РАБОТЕ!**"
+            )
             
             for admin_id in config.bot.admin_ids:
                 try:
@@ -360,33 +299,26 @@ async def main():
                 except Exception as e:
                     print(f"  ⚠️ Не удалось уведомить {admin_id}: {e}")
         
-        print("\n" + "=" * 50)
-        if ai_modules_available:
-            print("🧠 ENHANCED AI BOT v3.0 УСПЕШНО ЗАПУЩЕН!")
-            print("🚀 РЕЖИМ: МАКСИМАЛЬНО ЧЕЛОВЕКОПОДОБНЫЙ AI")
-        else:
-            print("💀 ENHANCED BOT v3.0 ЗАПУЩЕН В БАЗОВОМ РЕЖИМЕ")
-            print("⚠️ Для AI режима добавьте модули!")
-        print("=" * 50)
+        print("\n" + "=" * 60)
+        print("🎭 ENHANCED BOT v3.0 С ПЕРСОНАЖАМИ УСПЕШНО ЗАПУЩЕН!")
         
-        if ai_modules_available:
-            print("\n🧠 AI ОСОБЕННОСТИ:")
-            print("  • Естественное человеческое общение")
-            print("  • Долгосрочная память о пользователях")
-            print("  • Анализ эмоций и адаптация")
-            print("  • Умные реакции на стикеры/GIF")
-            print("  • Расширенные триггеры с AI")
+        if AI_MODULES_AVAILABLE and PERSONA_KARMA_AVAILABLE:
+            print("🚀 РЕЖИМ: МАКСИМАЛЬНЫЕ ВОЗМОЖНОСТИ")
+            print("\n🎭 НОВЫЕ ВОЗМОЖНОСТИ:")
+            print("  • Произвольные персонажи (/be описание)")
+            print("  • Система кармы с 7 уровнями")
+            print("  • AI отвечает в роли персонажа")
+            print("  • Автоматическое начисление кармы")
+            print("  • Умная модерация с кармой")
+        elif AI_MODULES_AVAILABLE:
+            print("🧠 РЕЖИМ: ЧЕЛОВЕКОПОДОБНЫЙ AI")
         else:
-            print("\n🔧 БАЗОВЫЕ ВОЗМОЖНОСТИ:")
-            print("  • Логирование всех сообщений")
-            print("  • Ответы только при обращении")
-            print("  • Работа в разрешенных чатах")
-            print("  • Основные команды")
+            print("⚠️ РЕЖИМ: БАЗОВЫЙ")
+        
+        print("=" * 60)
         
         if config.bot.allowed_chat_ids:
             print(f"\n🔒 РАЗРЕШЕННЫЕ ЧАТЫ: {config.bot.allowed_chat_ids}")
-        else:
-            print("\n⚠️ ВНИМАНИЕ: Нет ограничений по чатам!")
         
         print("\n💡 Для остановки: Ctrl+C")
         
@@ -412,10 +344,7 @@ async def main():
         print("\n🔍 Проверь:")
         print("  1. BOT_TOKEN в .env")
         print("  2. ADMIN_IDS в .env") 
-        print("  3. ALLOWED_CHAT_IDS в .env")
-        print("  4. Правильность файлов конфигурации")
-        print("  5. Наличие всех модулей")
-        print("  6. Установку зависимостей: pip install anthropic aiofiles aiohttp")
+        print("  3. Наличие файлов модулей")
         input("\nНажми Enter для выхода...")
 
 if __name__ == "__main__":
